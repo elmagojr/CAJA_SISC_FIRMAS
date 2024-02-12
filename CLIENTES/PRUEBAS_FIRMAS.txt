@@ -1,0 +1,52 @@
+160000356
+0706198400092
+0101199202332
+10040014
+10033945
+0702196800051
+0706196900053
+0703193900288
+
+0703198004850
+
+firma 2: 0101011101010
+
+se creoo una nueva ventan W_asigna_cta_mancomuna
+
+
+
+
+COOP_NOMBRE,COOP_IDENTIDAD,COOP_DIRECC,COOP_SEXO,COOP_PAIS,COOP_DEPTO,COOP_MUNICIPIO,COOP_TEL,COOP_CIUDAD,COOP_ESTADO_CIVIL
+
+con('Eliminar este registro provocará que dicha Firma autorizada no pueda realizar algunas transacciones en nombre del afiliado dueño de esta cuenta (',Cooperativistas.COOP_CODIGO,')
+		>Dejará de Mancomunar la cuenta
+		>No podrá hacer Retiros
+		>No podrá Cancelar la Cuenta
+
+¿Esta seguro de Elimnar el registro? ')
+
+
+
+
+Detalle_Firmas.DEF_FECHA_AGR,
+Detalle_Firmas.DEF_NOMBRE,
+Detalle_Firmas.DEF_IDENTIDAD,
+Detalle_Firmas.DEF_DIRECCION,
+Detalle_Firmas.DEF_SEXO,
+Detalle_Firmas.DEF_PAIS,
+Detalle_Firmas.DEF_TEL,
+Detalle_Firmas.DEF_CIUDAD,
+Detalle_Firmas.DEF_ESTADO_CIVIL
+
+
+
+
+
+
+
+
+
+
+
+
+
