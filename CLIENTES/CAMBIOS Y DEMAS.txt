@@ -2,3 +2,8 @@ NUEVAS VENTANAS
 W_FirmasxCuentas
 W_busqueda_FXC
 w_buscar_persona
+w_seleccion_cta
+
+
+OJO SE ACTUALIZO EL BOTON FIRMAS EN EMPRESAS ..
+w_empresas

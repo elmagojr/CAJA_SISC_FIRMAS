@@ -30,7 +30,9 @@ con('Eliminar este registro provocará que dicha Firma autorizada no pueda realiz
 
 ¿Esta seguro de Elimnar el registro? ')
 
+¿Desea usar la identidad del cooperativista ([Cooperativistas.COOP_IDENTIDAD]) como la primera firma?
 
+Esto seteará a la persona como firma autorizada y como primera firma
 
 
 Detalle_Firmas.DEF_FECHA_AGR,
