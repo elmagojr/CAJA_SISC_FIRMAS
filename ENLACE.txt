@@ -1,0 +1,7 @@
+codigo:10015740
+nombre:el mago
+identidad:11111
+fromAction:0
+cia:1
+cta:10078364
+subIdentificador:hid	
