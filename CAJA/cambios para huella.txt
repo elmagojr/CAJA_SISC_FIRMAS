@@ -1,0 +1,9 @@
+W_huella_busqueda
+66 
+w_caja
+18,19
+file HUELLA 
+
+
+
+con('codigo:',HUELLA.HUE_CODIGO,',nombre:',HUELLA.HUE_NOMBRE,',identidad:',HUELLA.HUE_IDENTIDAD,',fromAction:',HUELLA.FROM_ACTION,',cia:',HUELLA.HUE_COMPANIA,',fil:',HUELLA.HUE_FILIAL,',cta:',HUELLA.HUE_CTA,',subIdentificador:',HUELLA.SUB_IDENTIFICADOR)
