@@ -1,0 +1,10 @@
+CAMBIOS A REALIZAR 
+
+VALIDAR busqueda cuando la estructurano esta; y que el mensaje no se muestre,
+que no permita volver a gregar 
+
+si es empresa no se debe mostrar el boton de asignar firma 1
+
+dehabilitar radios no disponibles al asignar firmas
+
+que el icono de agregar a firm 1 no parezca en caso de que no exista una firma
