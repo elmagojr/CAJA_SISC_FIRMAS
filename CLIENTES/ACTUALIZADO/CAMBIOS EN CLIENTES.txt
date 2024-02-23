@@ -1,0 +1,22 @@
+primero sube los files firmasxcuentas y huellas, luego las ventanas nuevas 
+
+
+w_cooperativista
+366
+367
+
+
+w_ahorros
+0 ultimo reglon
+101
+cons_firmas_aho
+
+W_detalle_firmas
+
+w_detalles_firmas_det
+
+w_empresas
+boton firmas
+
+
+agregado w_firmasxcuentas,w_buscar_persona,w_seleccion_cta 
