@@ -9,6 +9,7 @@ w_cooperativista
 w_ahorros
 0 ultimo reglon
 101
+310
 cons_firmas_aho
 
 W_detalle_firmas

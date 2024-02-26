@@ -1,5 +1,6 @@
 W_huella_busqueda
 66 
+67
 w_caja
 18,19
 file HUELLA 
