@@ -1,1 +1,4 @@
 0703199502647
+
+Calculate $cwind.$bobjs.1021.$text as ''
+Calculate $cwind.$objs.1022.$visible as 0
