@@ -1,0 +1,9 @@
+CREATE TRIGGER "after_identidad" AFTER UPDATE OF "DEF_IDENTIDAD"
+ORDER 2 ON "DBA"."Detalle_Firmas"
+REFERENCING OLD AS old_name NEW AS new_name 
+FOR EACH ROW /* WHEN( search_condition ) */
+BEGIN
+    update "DBA"."FIRMAS_X_CUENTA" SET FXC_IDENTIDAD = new_name.DEF_IDENTIDAD   where FXC_IDEN_DEF = old_name.DEF_SEC;
+	/* Type the trigger statements here */
+END;
+COMMENT ON TRIGGER "DBA"."Detalle_Firmas"."after_identidad" IS 'actaulizar al identidad en Firmas Ahorros y firmas x cuentas';

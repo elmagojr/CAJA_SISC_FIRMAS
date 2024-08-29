@@ -3,7 +3,7 @@ W_FirmasxCuentas
 W_busqueda_FXC
 w_buscar_persona
 w_seleccion_cta
-W_Parentezco_firmas
+
 
 OJO SE ACTUALIZO EL BOTON FIRMAS EN EMPRESAS ..
 w_empresas
