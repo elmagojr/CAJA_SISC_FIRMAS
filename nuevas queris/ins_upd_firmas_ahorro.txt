@@ -1,0 +1,20 @@
+CREATE TRIGGER "ins_upd_firmas_ahorro" after insert, update on
+DBA.Firmas_Ahorro
+referencing new as new_name /* REFERENCING NEW AS new-name */
+for each row
+when(current user <> 'DBA' and current user <> 'USR_SPS')
+begin
+  declare Var_Sec integer;
+  declare Var_Est TINYINT;
+  declare Var_Cod_Coop integer;
+  -- Registra la foto en formato para posteriormente poder transformarla en formato de imagen 
+   select Secuencia into Var_Sec from DBA.Imagenes_Sisali where Cod_Cta = new_name.Codigo_Cta_Aho;
+       
+        if Var_Sec >0 THEN 
+            update dba.IMAGENES_SISALI set Estado = 1, Tipo_Cta = 2,Fecha_Hora_Upd=current timestamp where secuencia = Var_Sec
+          ELSE
+            select aho_codigo_coo into Var_Cod_Coop from DBA.Ahorros where Aho_codigo_Cta= new_name.Codigo_Cta_Aho;
+            
+            insert into dba.IMAGENES_SISALI(Secuencia,Cod_Coop,Cod_Cta,Estado,Tipo_Cta) values (DEFAULT,Var_Cod_Coop,new_name.Codigo_Cta_Aho,1,2);
+        END IF 
+end;

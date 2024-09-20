@@ -1,0 +1,26 @@
+CREATE TABLE "DBA"."HUELLAS_FIGERS" (
+	"HUE_ID" INTEGER NOT NULL DEFAULT AUTOINCREMENT,
+	"HUE_CODIGO" VARCHAR(50) NULL,
+	"HUE_IDENTIDAD" VARCHAR(50) NOT NULL,
+	"HUE_TIPO_PER" VARCHAR(50) NOT NULL,
+	"HUELLA" LONG BINARY NOT NULL UNIQUE,
+	"FECHA_CREACION" "datetime" NULL DEFAULT CURRENT TIMESTAMP,
+	"HUE_COMPANIA" INTEGER NULL,
+	"HUE_FILIAL" INTEGER NULL,
+	"HUE_OBSERVACION" VARCHAR(200) NOT NULL,
+	"FLAG" INTEGER NULL DEFAULT 0,
+	"DEDO" VARCHAR(20) NULL,
+	"HUELLA_SAMPLE" LONG BINARY NULL,
+	"USR_AGREGO" VARCHAR(100) NULL,
+	PRIMARY KEY ( "HUE_ID" ASC, "HUELLA" ASC, "HUE_IDENTIDAD" ASC )
+) IN "system";
+COMMENT ON TABLE "DBA"."HUELLAS_FIGERS" IS 'TABLA DONDE SE REGISTRAN LAS HUELLAS DIGITALES DE LAS PERSONAS';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."HUE_ID" IS 'identificador unico';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."HUE_CODIGO" IS 'si HUE_TIPO_PER  es  Coop, guarda el codigo afiliado; si es DEF el secuencial del def con que se registro la huella ';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."HUE_IDENTIDAD" IS 'idenditidad de la persona';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."HUE_TIPO_PER" IS 'tipo de persona COOP para cooperativista y DEF para los registrados en la tabla detalles_firma';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."HUELLA" IS 'guarda la cadena hexadeciamal de la huella';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."HUE_OBSERVACION" IS 'observacion a la hora de registrar la huella';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."FLAG" IS 'al hacer una verificacion de esta huella se coloca en 1, el addon tomara el valor en 1 para validar la huella';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."DEDO" IS 'identificador de que dedo es: mano derecha DD y DI la izquierda (1 pulgar 5 meñique, en suscecion)  ';
+COMMENT ON COLUMN "DBA"."HUELLAS_FIGERS"."HUELLA_SAMPLE" IS 'guarda la imagen de la huella en jpeg en resolucion 80x80 pixeles';

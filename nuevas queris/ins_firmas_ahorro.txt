@@ -1,0 +1,12 @@
+CREATE TRIGGER "ins_firmas_ahorro" before insert order 1 on
+DBA.Firmas_Ahorro
+referencing new as new_name /* REFERENCING NEW AS new-name */
+for each row
+when(current user <> 'DBA' and current user <> 'USR_SPS')
+begin
+  declare filial smallint;
+  declare compania smallint;
+  select USU_FILIAL,USU_COMPANIA into filial,compania from DBA.Usuarios where USU_CODIGO = current user;
+  set new_name.CODIGO_COMPANIA=compania;
+  set new_name.CODIGO_FILIAL=filial
+end;

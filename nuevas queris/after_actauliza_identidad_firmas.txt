@@ -1,0 +1,57 @@
+CREATE TRIGGER "after_actauliza_identidad_firmas" AFTER UPDATE OF "FXC_IDENTIDAD"
+ORDER 2 ON "DBA"."FIRMAS_X_CUENTA"
+ REFERENCING OLD AS old_name NEW AS new_name 
+FOR EACH ROW /* WHEN( search_condition ) */
+BEGIN
+DECLARE @contenido INTEGER ;
+DECLARE @firma varchar (100);
+
+--old_name.FXC_IDENTIDAD
+--old_name.FXC_CTA_AHO
+
+WITH  temporal AS(    
+SELECT 'F1' as firma, Codigo_Cta_Aho as CTA, FIRMA1_AHO_IDEN AS IDENTIDAD FROM  dba.Firmas_Ahorro 
+    WHERE Codigo_Cta_Aho = old_name.FXC_CTA_AHO 
+    UNION
+    SELECT 'F2' as firma, Codigo_Cta_Aho as CTA, FIRMA2_AHO_IDEN AS IDENTIDAD FROM  dba.Firmas_Ahorro 
+    WHERE Codigo_Cta_Aho = old_name.FXC_CTA_AHO
+    UNION 
+    SELECT 'F3' as firma, Codigo_Cta_Aho as CTA, FIRMA3_AHO_IDEN AS IDENTIDAD FROM  dba.Firmas_Ahorro 
+    WHERE Codigo_Cta_Aho = old_name.FXC_CTA_AHO
+    UNION 
+    SELECT 'F4' as firma, Codigo_Cta_Aho as CTA, FIRMA4_AHO_IDEN AS IDENTIDAD FROM  dba.Firmas_Ahorro 
+    WHERE Codigo_Cta_Aho = old_name.FXC_CTA_AHO
+)
+
+
+  SELECT COUNT(*) INTO @contenido FROM temporal where identidad =old_name.FXC_IDENTIDAD;
+if  @contenido > 0 then
+WITH  temporal AS(    
+    SELECT 'F1' as firma, Codigo_Cta_Aho as CTA, FIRMA1_AHO_IDEN AS IDENTIDAD FROM  dba.Firmas_Ahorro 
+    WHERE Codigo_Cta_Aho = old_name.FXC_CTA_AHO 
+    UNION
+    SELECT 'F2' as firma, Codigo_Cta_Aho as CTA, FIRMA2_AHO_IDEN AS IDENTIDAD FROM  dba.Firmas_Ahorro 
+    WHERE Codigo_Cta_Aho = old_name.FXC_CTA_AHO
+    UNION 
+    SELECT 'F3' as firma, Codigo_Cta_Aho as CTA, FIRMA3_AHO_IDEN AS IDENTIDAD FROM  dba.Firmas_Ahorro 
+    WHERE Codigo_Cta_Aho = old_name.FXC_CTA_AHO
+    UNION 
+    SELECT 'F4' as firma, Codigo_Cta_Aho as CTA, FIRMA4_AHO_IDEN AS IDENTIDAD FROM  dba.Firmas_Ahorro 
+    WHERE Codigo_Cta_Aho = old_name.FXC_CTA_AHO
+)
+SELECT firma into @firma from temporal where identidad =old_name.FXC_IDENTIDAD;
+    case   @firma 
+    when 'F1' THEN
+        update dba.Firmas_Ahorro set FIRMA1_AHO_IDEN = new_name.FXC_IDENTIDAD where FIRMA1_AHO_IDEN =old_name.FXC_IDENTIDAD;
+
+    WHEN 'F2' THEN 
+        update dba.Firmas_Ahorro set FIRMA2_AHO_IDEN = new_name.FXC_IDENTIDAD where FIRMA2_AHO_IDEN =old_name.FXC_IDENTIDAD;
+    WHEN 'F3' THEN 
+        update dba.Firmas_Ahorro set FIRMA3_AHO_IDEN = new_name.FXC_IDENTIDAD where FIRMA3_AHO_IDEN = old_name.FXC_IDENTIDAD;
+    WHEN 'F4' THEN 
+        update dba.Firmas_Ahorro set FIRMA4_AHO_IDEN = new_name.FXC_IDENTIDAD where FIRMA4_AHO_IDEN = old_name.FXC_IDENTIDAD;
+    END CASE;
+end if;
+	/* Type the trigger statements here */
+END;
+COMMENT ON TRIGGER "DBA"."FIRMAS_X_CUENTA"."after_actauliza_identidad_firmas" IS 'actauliza la identidad en la tabla Firmas Ahorros';

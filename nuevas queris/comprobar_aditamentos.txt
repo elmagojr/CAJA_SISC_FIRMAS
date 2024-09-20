@@ -1,0 +1,12 @@
+CREATE FUNCTION "DBA"."comprobar_aditamentos"( /* [IN] parameter_name parameter_type [DEFAULT default_value], ... */
+
+in @string_nombre_objeto varchar(512) )
+RETURNS NUMERIC(1,0)
+DETERMINISTIC
+BEGIN
+	DECLARE "comprovado" NUMERIC(1,0);
+	/* Type the function statements here */
+    set comprovado = 1;
+	RETURN "comprovado";
+END;
+COMMENT ON PROCEDURE "DBA"."comprobar_aditamentos" IS 'esta funcion sirve para determinar que un objetos en la base de datos exista';
