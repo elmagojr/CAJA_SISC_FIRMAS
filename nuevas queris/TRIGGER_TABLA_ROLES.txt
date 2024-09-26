@@ -1,0 +1,44 @@
+CREATE TRIGGER "trg_tablas_parame_ROL" AFTER UPDATE
+ORDER 1 ON "DBA"."ROL_HUELLA"
+REFERENCING OLD AS old_name NEW AS new_name
+FOR EACH ROW /* WHEN( search_condition ) */
+BEGIN
+        declare Campo VARCHAR(100);
+        declare Query VARCHAR(1000);
+        declare Valor_Anterior VARCHAR(255);
+        declare Valor_Nuevo VARCHAR(255);
+        declare ExisteCampo integer;
+        
+        SELECT COUNT(*) INTO ExisteCampo FROM DBA.TABLAS_PARAMETRIZADAS WHERE TP_TABLA = 'ROL_HUELLA' AND TP_ESTADO=1; 
+        
+        if(ExisteCampo>0) then
+        begin
+            declare Inserta_Bitacora dynamic scroll cursor for
+            SELECT TP_CAMPO INTO Campo FROM DBA.TABLAS_PARAMETRIZADAS WHERE TP_TABLA = 'ROL_HUELLA' AND TP_ESTADO=1;  
+            open Inserta_Bitacora;
+            fetch next Inserta_Bitacora into Campo;
+        
+            if(@@sqlstatus = 2) then
+              print "No se encontró ningun Registro";
+              close Inserta_Bitacora;
+              return
+            end if;
+        
+            while(@@sqlstatus = 0) loop
+          
+            SET Query = 'SELECT old_name.' + Trim(Campo) +',new_name.' + Trim(Campo) + ' INTO Valor_Anterior,Valor_Nuevo FROM DUMMY';
+            EXECUTE IMMEDIATE Query;
+        
+            IF(Trim(Valor_Anterior) <> Trim(Valor_Nuevo)) THEN
+               insert into DBA.HISTO_TABLAS ("HT_TABLA","HT_CAMPO_PK","HT_VALOR_PK","HT_CAMPO_AFECTADO","HT_VALOR_ANTERIOR","HT_VALOR_NUEVO") 
+               values('ROL_HUELLA', 'ID_ROLHUE', new_name.HUE_ID,Campo,Valor_Anterior,Valor_Nuevo) 
+            END IF;
+        
+               fetch next Inserta_Bitacora into Campo;
+               end loop;
+               close Inserta_Bitacora;      
+            end;
+         
+            
+        end if; 
+END;

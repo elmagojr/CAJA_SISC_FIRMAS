@@ -1,0 +1,181 @@
+CREATE TABLE "DBA"."HISTO_TABLAS" (
+	"HT_SECUENCIA" INTEGER NOT NULL,
+	"HT_TABLA" VARCHAR(100) NOT NULL,
+	"HT_CAMPO_PK" VARCHAR(100) NOT NULL,
+	"HT_VALOR_PK" VARCHAR(100) NOT NULL,
+	"HT_CAMPO_AFECTADO" VARCHAR(100) NOT NULL,
+	"HT_VALOR_ANTERIOR" VARCHAR(500) NOT NULL,
+	"HT_VALOR_NUEVO" VARCHAR(500) NOT NULL,
+	"HT_AGREGO" CHAR(10) NOT NULL DEFAULT CURRENT USER,
+	"HT_FECHA_AGR" DATE NOT NULL DEFAULT CURRENT DATE,
+	"HT_HORA_AGR" TIME NOT NULL DEFAULT CURRENT TIME,
+	"HT_COMPANIA" TINYINT NOT NULL,
+	CONSTRAINT "HISTO_TABLAS_PK" PRIMARY KEY ( "HT_SECUENCIA" ASC, "HT_COMPANIA" ASC )
+) IN "system";
+
+
+
+CREATE TABLE "DBA"."TABLAS_PARAMETRIZADAS" (
+	"TP_SECUENCIA" INTEGER NOT NULL,
+	"TP_TABLA" VARCHAR(100) NOT NULL,
+	"TP_DESCRIPCION_TABLA" VARCHAR(100) NOT NULL,
+	"TP_CAMPO" VARCHAR(100) NOT NULL,
+	"TP_DESCRIPCION_CAMPO" VARCHAR(100) NOT NULL,
+	"TP_PRIMARY_KEY" TINYINT NOT NULL,
+	"TP_ESTADO" TINYINT NOT NULL DEFAULT 0,
+	"TP_AGREGO" CHAR(10) NOT NULL DEFAULT CURRENT USER,
+	"TP_FECHA_AGR" DATE NOT NULL DEFAULT CURRENT DATE,
+	"TP_MODIFICO" CHAR(10) NULL DEFAULT CURRENT USER,
+	"TP_FECHA_MOD" DATE NULL DEFAULT CURRENT DATE,
+	"TP_COMPANIA" TINYINT NOT NULL,
+	CONSTRAINT "HISTO_TABLAS_PK" PRIMARY KEY ( "TP_SECUENCIA" ASC, "TP_COMPANIA" ASC )
+) IN "system";
+COMMENT ON COLUMN "DBA"."TABLAS_PARAMETRIZADAS"."TP_PRIMARY_KEY" IS '0:No es llave primaria, 1:Es llave Primaria';
+COMMENT ON COLUMN "DBA"."TABLAS_PARAMETRIZADAS"."TP_ESTADO" IS '0:Inactivo, 1:Activo';
+
+CREATE TRIGGER "Histo_Tablas_Secuencia" before insert order 1 on
+DBA."HISTO_TABLAS"
+referencing new as new_name
+for each row
+when(current user <> 'DBA' and current user <> 'USR_SPS')
+begin
+  declare numero decimal(15);
+  declare filial smallint;
+  declare COMPANIA smallint;
+  select USU_FILIAL,USU_COMPANIA into filial,COMPANIA from DBA.Usuarios where USU_CODIGO = current user;
+  
+  set NEW_NAME.HT_COMPANIA=COMPANIA;
+  select func_llaves('HISTO_TABLAS.HT_SECUENCIA',filial) into numero from SYS.DUMMY;
+  set new_name.HT_SECUENCIA=numero;
+  set new_name.HT_AGREGO=current user;
+  set new_name.HT_FECHA_AGR=current date;
+end
+
+--------------------------------------------------------------------------------------------------;
+
+
+
+CREATE TRIGGER "Tablas_Param_Secuencia" before insert order 1 on
+DBA."TABLAS_PARAMETRIZADAS"
+referencing new as new_name
+for each row
+when(current user <> 'DBA' and current user <> 'USR_SPS')
+begin
+  declare numero decimal(15);
+  declare filial smallint;
+  declare COMPANIA smallint;
+  select USU_FILIAL,USU_COMPANIA into filial,COMPANIA from DBA.Usuarios where USU_CODIGO = current user;
+  
+  set NEW_NAME.TP_COMPANIA=COMPANIA;
+  select func_llaves('TABLAS_PARAMETRIZADAS.TP_SECUENCIA',filial) into numero from SYS.DUMMY;
+  set new_name.TP_SECUENCIA=numero;
+  set new_name.TP_AGREGO=current user;
+  set new_name.TP_FECHA_AGR=current date;
+  set new_name.TP_MODIFICO=null; 
+  set new_name.TP_FECHA_MOD=null; 
+end;
+
+CREATE TRIGGER "Trg_Bita_Tab_Param" after insert, update, delete on
+DBA.TABLAS_PARAMETRIZADAS
+referencing old as old_name new as new_name
+for each row WHEN( current user<>'DBA')
+begin
+
+if inserting then 
+INSERT INTO "DBA"."BITA_TABLAS_PARAMETRIZADAS" 
+("BTP_TABLA","BTP_DESCRIPCION_TABLA","BTP_CAMPO","BTP_DESCRIPCION_CAMPO","BTP_PRIMARY_KEY","BTP_ESTADO","BTP_AGREGO","BTP_FECHA_AGR","BTP_ACCION") 
+VALUES(new_name.TP_TABLA, new_name.TP_DESCRIPCION_TABLA,new_name.TP_CAMPO,new_name.TP_DESCRIPCION_CAMPO,new_name.TP_PRIMARY_KEY,new_name.TP_ESTADO,new_name.TP_AGREGO,new_name.TP_FECHA_AGR,'I')
+
+elseif updating then
+INSERT INTO "DBA"."BITA_TABLAS_PARAMETRIZADAS" 
+("BTP_TABLA","BTP_DESCRIPCION_TABLA","BTP_CAMPO","BTP_DESCRIPCION_CAMPO","BTP_PRIMARY_KEY","BTP_ESTADO","BTP_AGREGO","BTP_FECHA_AGR","BTP_ACCION") 
+VALUES(new_name.TP_TABLA, new_name.TP_DESCRIPCION_TABLA,new_name.TP_CAMPO,new_name.TP_DESCRIPCION_CAMPO,new_name.TP_PRIMARY_KEY,new_name.TP_ESTADO,new_name.TP_AGREGO,new_name.TP_FECHA_AGR,'U')
+
+elseif deleting then
+INSERT INTO "DBA"."BITA_TABLAS_PARAMETRIZADAS" 
+("BTP_TABLA","BTP_DESCRIPCION_TABLA","BTP_CAMPO","BTP_DESCRIPCION_CAMPO","BTP_PRIMARY_KEY","BTP_ESTADO","BTP_AGREGO","BTP_FECHA_AGR","BTP_ACCION") 
+VALUES(old_name.TP_TABLA, old_name.TP_DESCRIPCION_TABLA,old_name.TP_CAMPO,old_name.TP_DESCRIPCION_CAMPO,old_name.TP_PRIMARY_KEY,old_name.TP_ESTADO,old_name.TP_AGREGO,old_name.TP_FECHA_AGR,'D')
+end if
+
+end;
+
+CREATE TRIGGER "trg_upd_Tablas_Param" before update order 2 on
+DBA.TABLAS_PARAMETRIZADAS
+referencing new as new_name
+for each row
+when(current user <> 'DBA' and current user <> 'USR_SPS')
+begin
+  set new_name.TP_MODIFICO=current user;
+  set new_name.TP_FECHA_MOD=current date
+end;
+
+
+
+
+
+
+-------------------------------------------------------------------------------------
+
+declare Campo VARCHAR(100);
+declare Query VARCHAR(1000);
+declare Valor_Anterior VARCHAR(255);
+declare Valor_Nuevo VARCHAR(255);
+declare ExisteCampo integer;
+
+--SELECT COUNT(*) INTO ExisteCampo FROM DBA.TABLAS_PARAMETRIZADAS WHERE TP_COMPANIA = new_name.AHO_COMPANIA AND TP_TABLA = 'AHORROS' AND TP_ESTADO=1; 
+select count( column_name) INTO ExisteCampo from sys.SYSCOLUMN where table_id=(SELECT table_id FROM SYS.SYSTABLE WHERE table_name = 'HUELLAS_FIGERS') 
+
+if(ExisteCampo>0) then
+begin
+    declare Inserta_Bitacora dynamic scroll cursor for
+    select column_name INTO Campo from sys.SYSCOLUMN where table_id=(SELECT table_id FROM SYS.SYSTABLE WHERE table_name = 'HUELLAS_FIGERS') 
+    --SELECT TP_CAMPO INTO Campo FROM DBA.TABLAS_PARAMETRIZADAS WHERE TP_COMPANIA = new_name.AHO_COMPANIA AND TP_TABLA = 'AHORROS' AND TP_ESTADO=1;  
+    open Inserta_Bitacora;
+    fetch next Inserta_Bitacora into Campo;
+
+    if(@@sqlstatus = 2) then
+      print "No se encontró ningun Registro";
+      close Inserta_Bitacora;
+      return
+    end if;
+
+    while(@@sqlstatus = 0) loop
+    
+    SET Query = 'SELECT old_name.' + Trim(Campo) +',new_name.' + Trim(Campo) + ' INTO Valor_Anterior,Valor_Nuevo FROM DUMMY';
+    EXECUTE IMMEDIATE Query;
+
+    IF(Trim(Valor_Anterior) <> Trim(Valor_Nuevo)) THEN
+       insert into DBA.HISTO_TABLAS ("HT_TABLA","HT_CAMPO_PK","HT_VALOR_PK","HT_CAMPO_AFECTADO","HT_VALOR_ANTERIOR","HT_VALOR_NUEVO") 
+       values('AHORROS', 'AHO_CODIGO_CTA', new_name.AHO_CODIGO_CTA,Campo,Valor_Anterior,Valor_Nuevo) 
+    END IF;
+
+       fetch next Inserta_Bitacora into Campo;
+       end loop;
+       close Inserta_Bitacora;      
+    end;
+ 
+    
+end if; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
