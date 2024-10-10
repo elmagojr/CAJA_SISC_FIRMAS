@@ -28,3 +28,27 @@ if p_tipo = 4 then
 end if;
 	/* Type the procedure statements here */
 END;
+
+
+
+
+btn_eliminar_rol
+btn_editar_rol
+btn_agregar_rol
+
+codigo:0
+nombre:conf
+identidad:0
+fromAction:0
+cia:1
+fil:1
+cta:ver
+usr_logged:HID
+
+
+
+
+
+
+
+
