@@ -7,3 +7,6 @@ w_seleccion_cta
 
 OJO SE ACTUALIZO EL BOTON FIRMAS EN EMPRESAS ..
 w_empresas
+
+w_cooperativist
+Agrega Bitacora - linea 250 se valdia la vitacora
